@@ -6,7 +6,7 @@ const TokenService = require("./tokenService");
 const UserDto = require("../dtos/userDto");
 const ApiError = require("../exceptions/apiError");
 class UserService {
-  async registration(email, password) {
+  async registration(email, password, role) {
     const candidate = await UserModel.findOne({ where: { email } });
     if (candidate) {
       throw ApiError.BadRequest(
@@ -18,6 +18,7 @@ class UserService {
     const user = await UserModel.create({
       email,
       password: hashPassword,
+      role,
       activationLink,
     });
     await MailService.sendActivationMail(
@@ -83,6 +84,11 @@ class UserService {
       ...tokens,
       user: userDto,
     };
+  }
+
+  async getUsers() {
+    const users = await UserModel.findAll();
+    return users;
   }
 }
 
