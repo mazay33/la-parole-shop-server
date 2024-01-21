@@ -11,7 +11,7 @@ class userController {
       });
       return res.json(user);
     } catch (error) {
-      console.log(error);
+      next(error)
     }
   }
 
@@ -31,7 +31,7 @@ class userController {
       await userService.activate(activationLink);
       res.redirect(process.env.CLIENT_URL);
     } catch (error) {
-      console.log(error);
+      next(error)
     }
   }
 
