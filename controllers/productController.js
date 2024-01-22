@@ -24,13 +24,29 @@ class ProductController {
 
   async createProduct(req, res, next) {
     try {
-      const { name, price } = req.body;
+      let { name, price, categoryId, info } = req.body;
 
       const { img } = req.files;
       let fileName = uuidv4() + ".jpg";
       img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-      const product = await ProductService.createProduct(name, price, fileName);
+      const product = await ProductService.createProduct(
+        name,
+        price,
+        categoryId,
+        fileName
+      );
+
+      if (info) {
+        info = JSON.parse(info);
+        info.forEach((i) =>
+          DeviceInfo.create({
+            title: i.title,
+            description: i.description,
+            deviceId: device.id,
+          })
+        );
+      }
       return res.json(product);
     } catch (error) {
       next(error);
@@ -40,7 +56,7 @@ class ProductController {
   async updateProduct(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, price } = req.body;
+      const { name, price, categoryId } = req.body;
 
       const { img } = req.files;
       let fileName = uuidv4() + ".jpg";
@@ -50,7 +66,8 @@ class ProductController {
         id,
         name,
         price,
-        fileName
+        fileName,
+        categoryId
       );
       return res.json(product);
     } catch (error) {

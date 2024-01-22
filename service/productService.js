@@ -11,18 +11,19 @@ class ProductService {
     return product;
   }
 
-  async createProduct(name, price, fileName) {
+  async createProduct(name, price, categoryId, fileName) {
     const product = await Product.create({
       name,
       price,
+      categoryId,
       img: fileName,
     });
     return product;
   }
 
-  async updateProduct(id, name, price, fileName) {
+  async updateProduct(id, name, price, fileName, categoryId) {
     const product = await Product.update(
-      { name, price, img: fileName },
+      { name, price, img: fileName, categoryId },
       { where: { id } }
     );
     return product;
