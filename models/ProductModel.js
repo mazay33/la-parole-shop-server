@@ -21,4 +21,20 @@ const Product = sequelize.define("Product", {
   },
 });
 
-module.exports = Product;
+const ProductInfo = sequelize.define("ProductInfo", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+})
+
+module.exports = { Product, ProductInfo };

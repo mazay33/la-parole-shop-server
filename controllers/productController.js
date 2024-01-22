@@ -37,6 +37,27 @@ class ProductController {
     }
   }
 
+  async updateProduct(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name, price } = req.body;
+
+      const { img } = req.files;
+      let fileName = uuidv4() + ".jpg";
+      img.mv(path.resolve(__dirname, "..", "static", fileName));
+
+      const product = await ProductService.updateProduct(
+        id,
+        name,
+        price,
+        fileName
+      );
+      return res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async deleteProduct(req, res, next) {
     try {
       const { id } = req.params;
