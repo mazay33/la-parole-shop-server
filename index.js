@@ -4,7 +4,7 @@ const sequelize = require("./db");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const router = require("./router/index");
-const models = require("./models/index");
+// const models = require("./models/index");
 const fileUpload = require("express-fileupload");
 const errorMiddleware = require("./middleware/errorMiddleware");
 
@@ -22,8 +22,8 @@ app.use(errorMiddleware);
 
 const start = async () => {
   try {
-    await sequelize.authenticate();
-    await sequelize.sync();
+    // await sequelize.authenticate();
+    // await sequelize.sync();
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {
     console.log(e);

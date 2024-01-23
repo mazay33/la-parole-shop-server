@@ -78,8 +78,8 @@ class ProductController {
   async deleteProduct(req, res, next) {
     try {
       const { id } = req.params;
-      await ProductService.deleteProduct(id);
-      return res.json({ deleted: true });
+      const product = await ProductService.deleteProduct(id);
+      return res.json({deleted: true, product });
     } catch (error) {
       next(error);
     }

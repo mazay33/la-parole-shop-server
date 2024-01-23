@@ -1,13 +1,13 @@
-const UserModel = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
 const MailService = require("./mailService");
 const TokenService = require("./tokenService");
 const UserDto = require("../dtos/userDto");
 const ApiError = require("../exceptions/apiError");
+const prisma = require("../db");
 class UserService {
   async registration(email, password, role) {
-    const candidate = await UserModel.findOne({ where: { email } });
+    const candidate = await prisma.user.findFirst({ where: { email } });
     if (candidate) {
       throw ApiError.BadRequest(
         `Пользователь с почтовым адресом ${email} уже существует`
@@ -15,11 +15,13 @@ class UserService {
     }
     const hashPassword = await bcrypt.hash(password, 3);
     const activationLink = uuid.v4();
-    const user = await UserModel.create({
-      email,
-      password: hashPassword,
-      role,
-      activationLink,
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashPassword,
+        role,
+        activationLink,
+      },
     });
     await MailService.sendActivationMail(
       email,
@@ -36,16 +38,19 @@ class UserService {
   }
 
   async activate(activationLink) {
-    const user = await UserModel.findOne({ where: { activationLink } });
+    const user = await prisma.user.findFirst({ where: { activationLink } });
     if (!user) {
       throw ApiError.BadRequest("Неккоректная ссылка активации");
     }
-    user.isActivated = true;
-    await user.save();
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { isActivated: true },
+    });
   }
 
   async login(email, password) {
-    const user = await UserModel.findOne({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       throw ApiError.BadRequest("Пользователь с таким email не найден");
     }
@@ -72,11 +77,12 @@ class UserService {
       throw ApiError.UnauthorizedError();
     }
     const userData = TokenService.validateRefreshToken(refreshToken);
+
     const tokenFromDb = await TokenService.findToken(refreshToken);
     if (!userData || !tokenFromDb) {
       throw ApiError.UnauthorizedError();
     }
-    const user = await UserModel.findByPk(userData.id);
+    const user = await prisma.user.findUnique({ where: { id: userData.id } });
     const userDto = new UserDto(user);
     const tokens = TokenService.generateTokens({ ...userDto });
     await TokenService.saveToken(userDto.id, tokens.refreshToken);
@@ -87,7 +93,7 @@ class UserService {
   }
 
   async getUsers() {
-    const users = await UserModel.findAll();
+    const users = await prisma.user.findMany();
     return users;
   }
 }
