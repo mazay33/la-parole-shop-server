@@ -23,6 +23,11 @@ class UserService {
         activationLink,
       },
     });
+    const cart = await prisma.cart.create({
+      data: {
+        userId: user.id,
+      },
+    })
     await MailService.sendActivationMail(
       email,
       `${process.env.API_URL}/api/auth/activate/${activationLink}`
@@ -34,6 +39,7 @@ class UserService {
     return {
       ...tokens,
       user: userDto,
+      cart: cart
     };
   }
 
@@ -93,7 +99,11 @@ class UserService {
   }
 
   async getUsers() {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        cart: true,
+      },
+    });
     return users;
   }
 }
