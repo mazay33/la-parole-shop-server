@@ -10,16 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//USER ========================================================================================
 model User {
-  id             Int            @id @default(autoincrement())
-  email          String         @unique
+  id             Int     @id @default(autoincrement())
+  email          String  @unique
   password       String
-  role           Role           @default(USER)
-  isActivated    Boolean        @default(false)
+  role           Role    @default(USER)
+  isActivated    Boolean @default(false)
   activationLink String
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  refreshToken   RefreshToken[]
+
+  refreshToken RefreshToken[]
+
+  profile Profile?
+  cart    Cart?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id       Int     @id @default(autoincrement())
+  name     String?
+  phone    String? @unique
+  birthday String?
+  address  String?
+  user     User    @relation(fields: [userId], references: [id])
+  userId   Int     @unique
 }
 
 model RefreshToken {
@@ -32,19 +48,51 @@ model RefreshToken {
   updatedAt DateTime @updatedAt
 }
 
-model Product {
-  id    Int    @id @default(autoincrement())
-  name  String
-  price Int
-  img   String
+//CART ========================================================================================
+
+model Cart {
+  user       User          @relation(fields: [userId], references: [id])
+  userId     Int           @unique
+  cart_items CartProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartProduct {
+  cart      Cart    @relation(fields: [cartId], references: [userId])
+  cartId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  count Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  @@unique([cartId, productId], name: "UniqueCartItem")
+}
 
+//PRODUCT ========================================================================================
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  name String
+  img  String[]
+
+  price    Float
+  discount Float @default(0)
+  stock    Int   @default(0)
+
+  isAvailable Boolean @default(false)
+
+  cart_items  CartProduct[]
   productInfo ProductInfo[]
+
+  categories Category[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProductInfo {
@@ -60,10 +108,14 @@ model ProductInfo {
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
 
-  product   Product[]
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
