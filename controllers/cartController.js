@@ -1,18 +1,17 @@
-const CartCService = require("../service/cartService");
+const CartService = require("../service/cartService");
 
 
 class CartController {
   async getCartItems(req, res, next) {
-    const { userId } = req.body;
+    const { id } = req.user;
+
     try {
-      const cartItems = await CartCService.getCartItems(userId);
+      const cartItems = await CartService.getCartItems(id);
       return res.json(cartItems);
     } catch (error) {
       next(error);
     }
   }
-
-
 }
 
 module.exports = new CartController();

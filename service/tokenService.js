@@ -40,7 +40,7 @@ class TokenService {
     if (tokenData) {
       tokenData.refreshToken = refreshToken;
       await prisma.refreshToken.update({
-        where: { id: userId },
+        where: { userId },
         data: { refreshToken: tokenData.refreshToken },
       });
 
