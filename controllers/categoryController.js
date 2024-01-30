@@ -2,7 +2,7 @@ const CategoryService = require("../service/categoryService");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
-class ProductController {
+class CategoryController {
   async getCategories(req, res, next) {
     try {
       const categories = await CategoryService.getCategories();
@@ -44,4 +44,4 @@ class ProductController {
   }
 }
 
-module.exports = new ProductController();
+module.exports = new CategoryController();

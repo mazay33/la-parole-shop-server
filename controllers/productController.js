@@ -24,9 +24,7 @@ class ProductController {
 
   async createProduct(req, res, next) {
     try {
-      let { name, price, categories, info } = req.body;
-
-      categories = JSON.parse(categories);
+      let { name, price, categoryId, subCategoryId, info } = req.body;
 
       // Destructuring the 'images' property from the request files
       const { images } = req.files;
@@ -53,7 +51,8 @@ class ProductController {
       const product = await ProductService.createProduct(
         name,
         price,
-        categories,
+        categoryId,
+        subCategoryId,
         fileNames
       );
 
@@ -76,9 +75,7 @@ class ProductController {
   async updateProduct(req, res, next) {
     try {
       const { id } = req.params;
-      let { name, price, categories } = req.body;
-
-      categories = JSON.parse(categories);
+      let { name, price, categoryId, subCategoryId, info } = req.body;
 
       // Destructuring the 'images' property from the request files
       const { images } = req.files;
@@ -106,10 +103,21 @@ class ProductController {
         id,
         name,
         price,
-        categories,
+        categoryId,
+        subCategoryId,
         fileNames
       );
 
+      if (info) {
+        info = JSON.parse(info);
+        info.forEach((i) =>
+          DeviceInfo.create({
+            title: i.title,
+            description: i.description,
+            deviceId: device.id,
+          })
+        );
+      }
       return res.json(product);
     } catch (error) {
       next(error);
@@ -128,9 +136,13 @@ class ProductController {
 
   async addToCart(req, res, next) {
     try {
-      const {userId, productId, count } = req.body;
-      const cartProduct = await ProductService.addToCart(userId,productId, count);
-      return  res.json(cartProduct);
+      const { userId, productId, count } = req.body;
+      const cartProduct = await ProductService.addToCart(
+        userId,
+        productId,
+        count
+      );
+      return res.json(cartProduct);
     } catch (error) {
       next(error);
     }

@@ -2,7 +2,11 @@ const prisma = require("../db");
 
 class CategoryService {
   async getCategories() {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({
+      include:{
+        sub_categories: true
+      }
+    });
     return categories;
   }
 

@@ -1,11 +1,15 @@
 const prisma = require("../db");
+const ApiError = require("../exceptions/apiError");
 
 class ProductService {
   async getProducts() {
     const products = await prisma.product.findMany({
       include: {
-        categories: {
-          select: { id: true, name: true },
+        category: {
+          select: { name: true },
+        },
+        subCategory: {
+          select: { name: true },
         },
       },
     });
@@ -14,43 +18,87 @@ class ProductService {
 
   async getProduct(id) {
     const product = await prisma.product.findFirst({
-      where: { id: Number(id) },
+      where: {
+        id: Number(id),
+      },
       include: {
-        categories: {
-          select: { id: true, name: true },
+        category: {
+          select: { name: true },
         },
+        subCategory: {
+          select: { name: true },
+        },
+        productInfo: true,
       },
     });
     return product;
   }
 
-  async createProduct(name, price, categories, fileNames) {
+  async createProduct(name, price, categoryId, subCategoryId, fileNames) {
+    const subCategory = await prisma.subCategory.findFirst({
+      where: {
+        id: Number(subCategoryId),
+        categoryId: Number(categoryId),
+      },
+    });
+
+    if (!subCategory) {
+      throw ApiError.BadRequest(
+        "Созданная подкатегория не принадлежит существующей категории"
+      );
+    }
+
     const product = await prisma.product.create({
       data: {
         name,
         price: Number(price),
-        categories: {
-          connect: categories,
-        },
         img: fileNames,
+        category: {
+          connect: {
+            id: Number(categoryId),
+          },
+        },
+        subCategory: {
+          connect: {
+            id: Number(subCategoryId),
+          },
+        },
       },
-      include: { categories: true },
     });
     return product;
   }
 
-  async updateProduct(id, name, price, categories, fileNames) {
+  async updateProduct(id, name, price, categoryId, subCategoryId, fileNames) {
+    const subCategory = await prisma.subCategory.findFirst({
+      where: {
+        id: Number(subCategoryId),
+        categoryId: Number(categoryId),
+      },
+    });
+
+    if (!subCategory) {
+      throw ApiError.BadRequest(
+        "Созданная подкатегория не принадлежит существующей категории"
+      );
+    }
+
     const product = await prisma.product.update({
       where: { id: Number(id) },
       data: {
         name,
         price: Number(price),
-        categories: {
-          connect: categories,
-        },
         img: fileNames,
+        category: {
+          connect: {
+            id: Number(categoryId),
+          },
+        },
+        subCategory: {
+          connect: {
+            id: Number(subCategoryId),
+          },
+        },
       },
-      include: { categories: true },
     });
     return product;
   }
