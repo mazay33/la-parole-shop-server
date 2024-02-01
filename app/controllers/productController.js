@@ -39,12 +39,12 @@ class ProductController {
       if (Array.isArray(images)) {
         // If 'images' is an array, iterate through each image and move it to the specified path
         images.forEach((img) => {
-          img.mv(path.resolve(__dirname, "..", "static", fileName)); // Move the image to the specified path
+          img.mv(path.resolve(__dirname, "../..", "static", fileName)); // Move the image to the specified path
           fileNames.push(fileName); // Add the filename to the array
         });
       } else {
         // If 'images' is not an array, move the image to the specified path
-        images.mv(path.resolve(__dirname, "..", "static", fileName));
+        images.mv(path.resolve(__dirname, "../..", "static", fileName));
         fileNames.push(fileName); // Add the filename to the array
       }
 
@@ -90,12 +90,12 @@ class ProductController {
       if (Array.isArray(images)) {
         // If 'images' is an array, iterate through each image and move it to the specified path
         images.forEach((img) => {
-          img.mv(path.resolve(__dirname, "..", "static", fileName)); // Move the image to the specified path
+          img.mv(path.resolve(__dirname, "../..", "static", fileName)); // Move the image to the specified path
           fileNames.push(fileName); // Add the filename to the array
         });
       } else {
         // If 'images' is not an array, move the image to the specified path
-        images.mv(path.resolve(__dirname, "..", "static", fileName));
+        images.mv(path.resolve(__dirname, "../..", "static", fileName));
         fileNames.push(fileName); // Add the filename to the array
       }
 

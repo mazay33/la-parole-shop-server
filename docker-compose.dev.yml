@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  app:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - .:/app
+      - ./static:/app/static
+
+  nginx:
+    container_name: proxy_nginx
+    depends_on:
+      - app
+      - db
+      - pgadmin
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./static:/var/www/static
+    restart: always
+
+
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: mazaev2000@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5050:80"
