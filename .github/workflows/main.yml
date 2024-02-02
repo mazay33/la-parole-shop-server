@@ -30,4 +30,10 @@ jobs:
           docker stop la-parole-shop-server-app-1
           docker rm la-parole-shop-server-app-1
           docker run -d --name la-parole-shop-server-app-1 -p 3000:3000 la-parole-shop-server-app
-          
+
+    - name: telegram notification
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_CHAT_ID }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        args: New version publish 
