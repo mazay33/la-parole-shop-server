@@ -20,7 +20,7 @@ app.use(errorMiddleware);
 
 const start = async () => {
   try {
-    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    app.listen(PORT, () => console.log(`Server started on port ${PORT} test git action`));
   } catch (e) {
     console.log(e);
   }
