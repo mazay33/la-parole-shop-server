@@ -26,4 +26,4 @@ jobs:
           cd  la-parole-shop-server/
           git pull origin main
           git status
-          docker build --no-cache -t la-parole-shop-server-app-1 
+          docker build --no-cache -t la-parole-shop-server-app-1 .
