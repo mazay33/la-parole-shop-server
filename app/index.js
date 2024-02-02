@@ -20,7 +20,7 @@ app.use(errorMiddleware);
 
 const start = async () => {
   try {
-    app.listen(5000, () => console.log(`Server started on port ${PORT}`));
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {
     console.log(e);
   }
