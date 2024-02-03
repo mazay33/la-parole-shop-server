@@ -5,18 +5,18 @@ FROM node:20
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
-COPY prisma ./prisma/
+COPY package*.json /app/
 
 # Install app dependencies
+RUN npm install -g nodemon
 RUN npm install
 RUN npx prisma generate
 
 # Copy the rest of the application code to the working directory
-COPY . .
+COPY . /app
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Command to run the application
-CMD ["./startup.sh"]
+CMD ["npm", "run", "dev"]

@@ -10,6 +10,7 @@ services:
       - db
     ports:
       - "3000:3000"
+    command: sh -c "npm install -g nodemon && npm install && npm run dev"
     restart: always
     volumes:
       - .:/app
