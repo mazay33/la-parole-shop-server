@@ -1,6 +1,6 @@
 name: Deploy
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:       
+    steps:
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master
       with:
@@ -26,14 +26,14 @@ jobs:
           cd  la-parole-shop-server/
           git pull origin main
           git status
-          docker build --no-cache -t la-parole-shop-server-app .
-          docker stop la-parole-shop-server-app-1
-          docker rm la-parole-shop-server-app-1
-          docker run -d --name la-parole-shop-server-app-1 -p 3000:3000 la-parole-shop-server-app
+          docker-compose -f docker-compose.dev.yml build app
+          docker-compose -f docker-compose.dev.yml up -d app
+          docker-compose -f docker-compose.dev.yml restart nginx
+          docker ps
 
     - name: telegram notification
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        args: New version publish 
+        args: New version publish
