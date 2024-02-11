@@ -15,6 +15,9 @@ RUN npx prisma generate
 # Copy the rest of the application code to the working directory
 COPY . /app
 
+COPY private.key .
+COPY certificate.crt .
+
 # Expose the port the app runs on
 EXPOSE 3000
 
