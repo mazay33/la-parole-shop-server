@@ -91,7 +91,7 @@ class userController {
         secure: true,
         sameSite: "None",
       });
-      res.cookie("accessToken", user.accessToken, {
+      res.cookie("accessToken", userData.accessToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: true,
