@@ -8,7 +8,7 @@ module.exports = function (role) {
       next();
     }
     try {
-      const accessToken = req.headers.authorization.split(" ")[1];
+      const accessToken = req.cookies.accessToken;
       if (!accessToken) {
         return next(ApiError.UnauthorizedError());
       }
