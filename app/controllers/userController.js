@@ -91,6 +91,12 @@ class userController {
         secure: true,
         sameSite: "None",
       });
+      res.cookie("accessToken", user.accessToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      });
       return res.json(userData);
     } catch (error) {
       next(error);
