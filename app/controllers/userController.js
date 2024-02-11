@@ -22,7 +22,7 @@ class userController {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-      })
+      });
       return res.json(user);
     } catch (error) {
       next(error);
@@ -44,7 +44,7 @@ class userController {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-      })
+      });
       return res.json(user);
     } catch (error) {
       next(error);
@@ -55,8 +55,16 @@ class userController {
     try {
       const { refreshToken } = req.cookies;
       const token = await userService.logout(refreshToken);
-      res.clearCookie("refreshToken");
-      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      });
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      });
       return res.json(token);
     } catch (error) {
       next(error);
