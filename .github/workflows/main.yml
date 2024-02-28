@@ -26,10 +26,8 @@ jobs:
           cd  la-parole-shop-server/
           git pull origin main
           git status
-          docker-compose -f docker-compose.dev.yml build app
-          docker-compose -f docker-compose.dev.yml up -d app
-          docker-compose -f docker-compose.dev.yml restart nginx
-          docker ps
+          pm2 restart backend
+          pm2 logs
 
     - name: telegram notification
       uses: appleboy/telegram-action@master
