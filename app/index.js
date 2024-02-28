@@ -8,14 +8,14 @@ const fileUpload = require("express-fileupload");
 const errorMiddleware = require("./middleware/errorMiddleware");
 const fs = require('fs');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
+	origin: 'https://la-parole.ru',
     credentials: true,
-    origin: process.env.CLIENT_URL
 }));
 app.use(fileUpload({}));
 app.use("/api", router);
@@ -25,17 +25,15 @@ app.use(errorMiddleware);
 
 const start = async () => {
   try {
-    const options = {
-      key: fs.readFileSync('private.key'),
-      cert: fs.readFileSync('certificate.crt'),
-    };
-    
-    https.createServer(options, app).listen(PORT, () => {
+
+    app.listen(PORT, () => {
       console.log(`Server started on port ${PORT}`);
     });
+
   } catch (e) {
     console.log(e);
   }
 };
 
 start();
+
