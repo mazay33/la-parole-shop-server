@@ -27,7 +27,7 @@ jobs:
           git pull origin main
           git status
           pm2 restart backend
-          pm2 logs
+          pm2 status
 
     - name: telegram notification
       uses: appleboy/telegram-action@master
