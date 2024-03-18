@@ -148,6 +148,18 @@ class ProductService {
     return cartProduct;
   }
 
+  async deleteFromCart(userId, productId) {
+    const cartProduct = await prisma.cartProduct.delete({
+      where: {
+        UniqueCartItem: {
+          cartId: Number(userId),
+          productId: Number(productId),
+        },
+      },
+    });
+    return cartProduct;
+  }
+
   async addToWishlist(userId, productId, count) {
     const existingWishlistProduct = await prisma.wishlistProduct.findFirst({
       where: {

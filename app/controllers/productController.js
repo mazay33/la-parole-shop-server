@@ -137,6 +137,20 @@ class ProductController {
     }
   }
 
+  async deleteFromCart(req, res, next) {
+    try {
+      const { id: userId } = req.user;
+      const { productId } = req.body;
+      const cartProduct = await ProductService.deleteFromCart(
+        userId,
+        productId
+      );
+      return res.json(cartProduct);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async addToWishlist(req, res, next) {
     try {
       const { id: userId } = req.user;

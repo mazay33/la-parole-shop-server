@@ -12,6 +12,12 @@ router.delete("/:id", checkRole("ADMIN"), productController.deleteProduct);
 
 router.post("/add-to-cart", authMiddleware, productController.addToCart);
 router.post(
+  "/delete-from-cart",
+  authMiddleware,
+  productController.deleteFromCart
+);
+
+router.post(
   "/add-to-wishlist",
   authMiddleware,
   productController.addToWishlist
