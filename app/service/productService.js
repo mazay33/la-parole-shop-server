@@ -104,7 +104,11 @@ class ProductService {
   }
 
   async deleteProduct(id) {
-    const product = await prisma.product.delete({ where: { id: Number(id) } });
+    const product = await prisma.product.delete({
+      where: {
+        id: Number(id),
+      },
+    });
     return product;
   }
 

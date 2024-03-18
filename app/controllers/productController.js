@@ -24,28 +24,22 @@ class ProductController {
 
   async createProduct(req, res, next) {
     try {
-      let { name, price, categoryId, subCategoryId, info } = req.body;
+      let { name, price, categoryId, subCategoryId } = req.body;
 
-      // Destructuring the 'images' property from the request files
       const { images } = req.files;
 
-      // Array to store the filenames
       let fileNames = [];
 
-      // Generating a unique filename using uuidv4
-      let fileName = uuidv4() + ".jpg";
-
-      // Checking if the 'images' is an array or not
       if (Array.isArray(images)) {
-        // If 'images' is an array, iterate through each image and move it to the specified path
         images.forEach((img) => {
-          img.mv(path.resolve(__dirname, "../..", "static", fileName)); // Move the image to the specified path
-          fileNames.push(fileName); // Add the filename to the array
+          let fileName = uuidv4() + ".jpg";
+          img.mv(path.resolve(__dirname, "../..", "static", fileName));
+          fileNames.push(fileName);
         });
       } else {
-        // If 'images' is not an array, move the image to the specified path
+        let fileName = uuidv4() + ".jpg";
         images.mv(path.resolve(__dirname, "../..", "static", fileName));
-        fileNames.push(fileName); // Add the filename to the array
+        fileNames.push(fileName);
       }
 
       const product = await ProductService.createProduct(
@@ -56,16 +50,16 @@ class ProductController {
         fileNames
       );
 
-      if (info) {
-        info = JSON.parse(info);
-        info.forEach((i) =>
-          DeviceInfo.create({
-            title: i.title,
-            description: i.description,
-            deviceId: device.id,
-          })
-        );
-      }
+      // if (info) {
+      //   info = JSON.parse(info);
+      //   info.forEach((i) =>
+      //     DeviceInfo.create({
+      //       title: i.title,
+      //       description: i.description,
+      //       deviceId: device.id,
+      //     })
+      //   );
+      // }
       return res.json(product);
     } catch (error) {
       next(error);
@@ -75,28 +69,22 @@ class ProductController {
   async updateProduct(req, res, next) {
     try {
       const { id } = req.params;
-      let { name, price, categoryId, subCategoryId, info } = req.body;
+      let { name, price, categoryId, subCategoryId } = req.body;
 
-      // Destructuring the 'images' property from the request files
       const { images } = req.files;
 
-      // Array to store the filenames
       let fileNames = [];
 
-      // Generating a unique filename using uuidv4
-      let fileName = uuidv4() + ".jpg";
-
-      // Checking if the 'images' is an array or not
       if (Array.isArray(images)) {
-        // If 'images' is an array, iterate through each image and move it to the specified path
+        let fileName = uuidv4() + ".jpg";
         images.forEach((img) => {
-          img.mv(path.resolve(__dirname, "../..", "static", fileName)); // Move the image to the specified path
-          fileNames.push(fileName); // Add the filename to the array
+          img.mv(path.resolve(__dirname, "../..", "static", fileName));
+          fileNames.push(fileName);
         });
       } else {
-        // If 'images' is not an array, move the image to the specified path
+        let fileName = uuidv4() + ".jpg";
         images.mv(path.resolve(__dirname, "../..", "static", fileName));
-        fileNames.push(fileName); // Add the filename to the array
+        fileNames.push(fileName);
       }
 
       const product = await ProductService.updateProduct(
@@ -108,16 +96,16 @@ class ProductController {
         fileNames
       );
 
-      if (info) {
-        info = JSON.parse(info);
-        info.forEach((i) =>
-          DeviceInfo.create({
-            title: i.title,
-            description: i.description,
-            deviceId: device.id,
-          })
-        );
-      }
+      // if (info) {
+      //   info = JSON.parse(info);
+      //   info.forEach((i) =>
+      //     DeviceInfo.create({
+      //       title: i.title,
+      //       description: i.description,
+      //       deviceId: device.id,
+      //     })
+      //   );
+      // }
       return res.json(product);
     } catch (error) {
       next(error);

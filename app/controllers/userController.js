@@ -54,6 +54,11 @@ class userController {
   async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
+
+      if (!refreshToken) {
+        return next(ApiError.BadRequest("No refresh token provided"));
+      }
+
       const token = await userService.logout(refreshToken);
       res.clearCookie("refreshToken", {
         httpOnly: true,

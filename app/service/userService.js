@@ -27,8 +27,7 @@ class UserService {
       data: {
         userId: user.id,
       },
-    })
-    console.log(process.env.API_URL);
+    });
     // await MailService.sendActivationMail(
     //   email,
     //   `${process.env.API_URL}/api/auth/activate/${activationLink}`
@@ -40,7 +39,7 @@ class UserService {
     return {
       ...tokens,
       user: userDto,
-      cart: cart
+      cart: cart,
     };
   }
 
