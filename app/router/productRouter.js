@@ -16,6 +16,11 @@ router.post(
   authMiddleware,
   productController.deleteFromCart
 );
+router.post(
+  "/delete-all-from-cart",
+  authMiddleware,
+  productController.deleteAllFromCart
+);
 
 router.post(
   "/add-to-wishlist",
