@@ -175,6 +175,30 @@ class ProductController {
       next(error);
     }
   }
+
+  async deleteFromWishlist(req, res, next) {
+    try {
+      const { id: userId } = req.user;
+      const { productId } = req.body;
+      const wishlistProduct = await ProductService.deleteFromWishlist(
+        userId,
+        productId
+      );
+      return res.json(wishlistProduct);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteAllFromWishlist(req, res, next) {
+    try {
+      const { id: userId } = req.user;
+      await ProductService.deleteAllFromWishlist(userId);
+      return res.json({ deleted: true });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new ProductController();

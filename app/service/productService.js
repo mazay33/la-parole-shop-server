@@ -168,6 +168,7 @@ class ProductService {
     });
     return cartProduct;
   }
+
   async addToWishlist(userId, productId, count) {
     const existingWishlistProduct = await prisma.wishlistProduct.findFirst({
       where: {
@@ -197,6 +198,27 @@ class ProductService {
             id: Number(productId),
           },
         },
+      },
+    });
+    return wishlistProduct;
+  }
+
+  async deleteFromWishlist(userId, productId) {
+    const wishlistProduct = await prisma.wishlistProduct.delete({
+      where: {
+        UniqueWishlistItem: {
+          wishlistId: Number(userId),
+          productId: Number(productId),
+        },
+      },
+    });
+    return wishlistProduct;
+  }
+
+  async deleteAllFromWishlist(userId) {
+    const wishlistProduct = await prisma.wishlistProduct.deleteMany({
+      where: {
+        wishlistId: Number(userId),
       },
     });
     return wishlistProduct;

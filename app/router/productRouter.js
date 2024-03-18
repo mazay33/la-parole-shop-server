@@ -27,5 +27,15 @@ router.post(
   authMiddleware,
   productController.addToWishlist
 );
+router.post(
+  "/delete-from-wishlist",
+  authMiddleware,
+  productController.deleteFromWishlist
+);
+router.post(
+  "/delete-all-from-wishlist",
+  authMiddleware,
+  productController.deleteAllFromWishlist
+);
 
 module.exports = router;
