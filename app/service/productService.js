@@ -113,6 +113,23 @@ class ProductService {
   }
 
   async addToCart(userId, productId, count) {
+    // Проверяем наличие данного продукта в корзине
+    const existingCartProduct = await prisma.cartProduct.findFirst({
+      where: {
+        cart: {
+          userId: Number(userId),
+        },
+        product: {
+          id: Number(productId),
+        },
+      },
+    });
+    // Если продукт уже есть в корзине, то выбрасываем ошибку
+    if (existingCartProduct) {
+      throw ApiError.BadRequest("Товар уже добавлен в корзину");
+    }
+
+    // Если продукта нет в корзине, то добавляем его
     const cartProduct = await prisma.cartProduct.create({
       data: {
         count: Number(count),
@@ -129,6 +146,40 @@ class ProductService {
       },
     });
     return cartProduct;
+  }
+
+  async addToWishlist(userId, productId, count) {
+    const existingWishlistProduct = await prisma.wishlistProduct.findFirst({
+      where: {
+        wishlist: {
+          userId: Number(userId),
+        },
+        product: {
+          id: Number(productId),
+        },
+      },
+    });
+
+    if (existingWishlistProduct) {
+      throw ApiError.BadRequest("Товар уже добавлен в избранное");
+    }
+
+    const wishlistProduct = await prisma.wishlistProduct.create({
+      data: {
+        count: Number(count),
+        wishlist: {
+          connect: {
+            userId: Number(userId),
+          },
+        },
+        product: {
+          connect: {
+            id: Number(productId),
+          },
+        },
+      },
+    });
+    return wishlistProduct;
   }
 }
 

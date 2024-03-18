@@ -28,6 +28,11 @@ class UserService {
         userId: user.id,
       },
     });
+    const wishlist = await prisma.wishlist.create({
+      data: {
+        userId: user.id,
+      },
+    });
     // await MailService.sendActivationMail(
     //   email,
     //   `${process.env.API_URL}/api/auth/activate/${activationLink}`
@@ -40,6 +45,7 @@ class UserService {
       ...tokens,
       user: userDto,
       cart: cart,
+      wishlist: wishlist,
     };
   }
 

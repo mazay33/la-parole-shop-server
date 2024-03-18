@@ -124,13 +124,29 @@ class ProductController {
 
   async addToCart(req, res, next) {
     try {
-      const { userId, productId, count } = req.body;
+      const { id: userId } = req.user;
+      const { productId, count } = req.body;
       const cartProduct = await ProductService.addToCart(
         userId,
         productId,
         count
       );
       return res.json(cartProduct);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async addToWishlist(req, res, next) {
+    try {
+      const { id: userId } = req.user;
+      const { productId, count } = req.body;
+      const wishlistProduct = await ProductService.addToWishlist(
+        userId,
+        productId,
+        count
+      );
+      return res.json(wishlistProduct);
     } catch (error) {
       next(error);
     }
