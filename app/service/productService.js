@@ -28,13 +28,21 @@ class ProductService {
         subCategory: {
           select: { name: true },
         },
+        variations: true,
         productInfo: true,
       },
     });
     return product;
   }
 
-  async createProduct(name, price, categoryId, subCategoryId, fileNames) {
+  async createProduct(
+    name,
+    price,
+    categoryId,
+    subCategoryId,
+    fileNames,
+    variation
+  ) {
     const subCategory = await prisma.subCategory.findFirst({
       where: {
         id: Number(subCategoryId),
@@ -65,7 +73,30 @@ class ProductService {
         },
       },
     });
-    return product;
+
+    if (variation) {
+      variation = JSON.parse(variation); // only for postman ??
+      variation.forEach(
+        async (i) =>
+          await prisma.productVariation.create({
+            data: {
+              sku: i.sku,
+              price: +i.price,
+              name: i.name,
+              product: {
+                connect: {
+                  id: product.id,
+                },
+              },
+            },
+          })
+      );
+    }
+
+    return {
+      ...product,
+      variation,
+    };
   }
 
   async updateProduct(id, name, price, categoryId, subCategoryId, fileNames) {

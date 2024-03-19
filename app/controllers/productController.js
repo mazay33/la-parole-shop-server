@@ -24,7 +24,7 @@ class ProductController {
 
   async createProduct(req, res, next) {
     try {
-      let { name, price, categoryId, subCategoryId } = req.body;
+      let { name, price, categoryId, subCategoryId, variation } = req.body;
 
       const { images } = req.files;
 
@@ -47,19 +47,10 @@ class ProductController {
         price,
         categoryId,
         subCategoryId,
-        fileNames
+        fileNames,
+        variation
       );
 
-      // if (info) {
-      //   info = JSON.parse(info);
-      //   info.forEach((i) =>
-      //     DeviceInfo.create({
-      //       title: i.title,
-      //       description: i.description,
-      //       deviceId: device.id,
-      //     })
-      //   );
-      // }
       return res.json(product);
     } catch (error) {
       next(error);
