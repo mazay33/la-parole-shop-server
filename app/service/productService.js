@@ -1,16 +1,17 @@
 const prisma = require("../db");
 const ApiError = require("../exceptions/apiError");
 
+const getPaginatedData = require("../utils/getPaginatedData");
+
 class ProductService {
-  async getProducts() {
-    const products = await prisma.product.findMany({
+  async getProducts(sort, limit, offset) {
+    const products = await getPaginatedData(prisma.product, {
+      sort,
+      limit,
+      offset,
       include: {
-        category: {
-          select: { name: true },
-        },
-        subCategory: {
-          select: { name: true },
-        },
+        category: { select: { name: true } },
+        subCategory: { select: { name: true } },
       },
     });
     return products;

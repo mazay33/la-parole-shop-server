@@ -5,7 +5,8 @@ const path = require("path");
 class ProductController {
   async getProducts(req, res, next) {
     try {
-      const products = await ProductService.getProducts();
+      const { sort, limit, offset } = req.query;
+      const products = await ProductService.getProducts(sort, limit, offset);
       return res.json(products);
     } catch (error) {
       next(error);
