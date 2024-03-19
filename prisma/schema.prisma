@@ -116,7 +116,7 @@ model WishlistProduct {
 //PRODUCT ========================================================================================
 
 model Product {
-  id   Int      @id @default(autoincrement())
+  id   Int      @id @unique @default(autoincrement())
   name String
   img  String[]
   sku  String   @default("")
@@ -130,14 +130,13 @@ model Product {
   cart_items     CartProduct[]
   wishlist_items WishlistProduct[]
 
-  productInfo ProductInfo[]
-
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
 
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
   subCategoryId Int
 
+  info       ProductInfo[]
   variations ProductVariation[]
 
   createdAt DateTime @default(now())
@@ -147,19 +146,19 @@ model Product {
 model ProductVariation {
   id        Int     @id @unique @default(autoincrement())
   product   Product @relation(fields: [productId], references: [id])
-  productId Int
+  productId Int     @unique
   sku       String
   price     Float
   name      String
 }
 
 model ProductInfo {
-  id          Int    @id @default(autoincrement())
+  id          Int    @id @unique @default(autoincrement())
   title       String
   description String
 
   product   Product @relation(fields: [productId], references: [id])
-  productId Int
+  productId Int @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -24,7 +24,8 @@ class ProductController {
 
   async createProduct(req, res, next) {
     try {
-      let { name, price, categoryId, subCategoryId, variation } = req.body;
+      let { name, price, categoryId, subCategoryId, variation, info } =
+        req.body;
 
       const { images } = req.files;
 
@@ -48,7 +49,8 @@ class ProductController {
         categoryId,
         subCategoryId,
         fileNames,
-        variation
+        variation,
+        info
       );
 
       return res.json(product);
@@ -60,7 +62,8 @@ class ProductController {
   async updateProduct(req, res, next) {
     try {
       const { id } = req.params;
-      let { name, price, categoryId, subCategoryId } = req.body;
+      let { name, price, categoryId, subCategoryId, variation, info } =
+        req.body;
 
       const { images } = req.files;
 
@@ -84,19 +87,11 @@ class ProductController {
         price,
         categoryId,
         subCategoryId,
-        fileNames
+        fileNames,
+        variation,
+        info
       );
 
-      // if (info) {
-      //   info = JSON.parse(info);
-      //   info.forEach((i) =>
-      //     DeviceInfo.create({
-      //       title: i.title,
-      //       description: i.description,
-      //       deviceId: device.id,
-      //     })
-      //   );
-      // }
       return res.json(product);
     } catch (error) {
       next(error);

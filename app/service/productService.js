@@ -29,7 +29,7 @@ class ProductService {
           select: { name: true },
         },
         variations: true,
-        productInfo: true,
+        info: true,
       },
     });
     return product;
@@ -41,7 +41,8 @@ class ProductService {
     categoryId,
     subCategoryId,
     fileNames,
-    variation
+    variation,
+    info
   ) {
     const subCategory = await prisma.subCategory.findFirst({
       where: {
@@ -74,6 +75,25 @@ class ProductService {
       },
     });
 
+    if (info) {
+      info = JSON.parse(info); // only for postman ??
+      console.log(info);
+      info.forEach(
+        async (i) =>
+          await prisma.productInfo.create({
+            data: {
+              title: i.title,
+              description: i.description,
+              product: {
+                connect: {
+                  id: product.id,
+                },
+              },
+            },
+          })
+      );
+    }
+
     if (variation) {
       variation = JSON.parse(variation); // only for postman ??
       variation.forEach(
@@ -96,10 +116,20 @@ class ProductService {
     return {
       ...product,
       variation,
+      info,
     };
   }
 
-  async updateProduct(id, name, price, categoryId, subCategoryId, fileNames) {
+  async updateProduct(
+    id,
+    name,
+    price,
+    categoryId,
+    subCategoryId,
+    fileNames,
+    variation,
+    info
+  ) {
     const subCategory = await prisma.subCategory.findFirst({
       where: {
         id: Number(subCategoryId),
@@ -131,7 +161,40 @@ class ProductService {
         },
       },
     });
-    return product;
+
+    if (info) {
+      info = JSON.parse(info); // only for postman ??
+      info.forEach(
+        async (i) =>
+          await prisma.productInfo.update({
+            where: {
+              productId: product.id,
+            },
+            data: {
+              title: i.title,
+              description: i.description,
+            },
+          })
+      );
+    }
+
+    if (variation) {
+      variation = JSON.parse(variation); // only for postman ??
+      variation.forEach(
+        async (i) =>
+          await prisma.productVariation.update({
+            where: {
+              productId: product.id,
+            },
+            data: {
+              sku: i.sku,
+              price: +i.price,
+              name: i.name,
+            },
+          })
+      );
+    }
+    return { ...product, variation, info };
   }
 
   async deleteProduct(id) {
