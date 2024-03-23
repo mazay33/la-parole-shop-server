@@ -42,7 +42,7 @@ class ProductController {
         info,
       }: ProductData = req.body;
 
-      const { images }: any = req.files;
+      const images = req.files?.images;
 
       let fileNames = [];
 
@@ -54,7 +54,7 @@ class ProductController {
         });
       } else {
         let fileName = uuidv4() + ".jpg";
-        images.mv(path.resolve(__dirname, "../..", "static", fileName));
+        images?.mv(path.resolve(__dirname, "../..", "static", fileName));
         fileNames.push(fileName);
       }
 
@@ -86,7 +86,7 @@ class ProductController {
         info,
       }: ProductData = req.body;
 
-      const { images }: any = req.files;
+      const images = req.files?.images;
 
       let fileNames = [];
 
@@ -98,7 +98,7 @@ class ProductController {
         });
       } else {
         let fileName = uuidv4() + ".jpg";
-        images.mv(path.resolve(__dirname, "../..", "static", fileName));
+        images?.mv(path.resolve(__dirname, "../..", "static", fileName));
         fileNames.push(fileName);
       }
 
