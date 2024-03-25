@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import uuid from "uuid";
+import { v4 } from "uuid";
 import MailService from "./mailService";
 import TokenService from "./tokenService";
 import UserDto from "../dtos/userDto";
@@ -15,8 +15,11 @@ class UserService {
         `Пользователь с почтовым адресом ${email} уже существует`
       );
     }
+
     const hashPassword = await bcrypt.hash(password, 3);
-    const activationLink = uuid.v4();
+
+    const activationLink = v4();
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -25,6 +28,7 @@ class UserService {
         activationLink,
       },
     });
+
     const cart = await prisma.cart.create({
       data: {
         userId: user.id,
