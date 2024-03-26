@@ -116,7 +116,27 @@ async function main() {
         categoryId: 4,
         description: "",
       },
+    ];
 
+    const cupSizes = [
+      { size: "A" },
+      { size: "B" },
+      { size: "C" },
+      { size: "D" },
+    ];
+
+    const underbustSizes = [
+      { size: "70" },
+      { size: "75" },
+      { size: "85" },
+      { size: "90" },
+    ];
+
+    const clothingSizes = [
+      { size: "XS" },
+      { size: "S" },
+      { size: "M" },
+      { size: "L" },
     ];
 
     const existingCategories = await prisma.category.findMany();
@@ -139,6 +159,36 @@ async function main() {
       for (const subCategory of subCategories) {
         await prisma.subCategory.create({
           data: subCategory,
+        });
+      }
+    }
+
+    const existingCupSizes = await prisma.cupSize.findMany();
+
+    if (existingCupSizes.length === 0) {
+      for (const cupSize of cupSizes) {
+        await prisma.cupSize.create({
+          data: cupSize,
+        });
+      }
+    }
+
+    const existingUnderbustSizes = await prisma.underbustSize.findMany();
+
+    if (existingUnderbustSizes.length === 0) {
+      for (const underbustSize of underbustSizes) {
+        await prisma.underbustSize.create({
+          data: underbustSize,
+        });
+      }
+    }
+
+    const existingClothingSizes = await prisma.clothingSize.findMany();
+
+    if (existingClothingSizes.length === 0) {
+      for (const clothingSize of clothingSizes) {
+        await prisma.clothingSize.create({
+          data: clothingSize,
         });
       }
     }

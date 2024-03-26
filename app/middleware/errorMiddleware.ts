@@ -12,5 +12,5 @@ export default function (
       .status(err.status)
       .json({ message: err.message, errors: err.errors });
   }
-  return res.status(500).json({ message: "Something went wrong" });
+  return res.status(500).json({ message: "Something went wrong", err });
 }

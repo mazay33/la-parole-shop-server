@@ -30,6 +30,9 @@ class ProductService {
         subCategory: {
           select: { name: true },
         },
+        cup_sizes: true,
+        clothing_sizes: true,
+        underbust_sizes: true,
         variations: true,
         info: true,
       },
@@ -44,7 +47,10 @@ class ProductService {
     subCategoryId: number,
     fileNames: string[],
     variation: ProductVariation[],
-    info: ProductInfo[]
+    info: ProductInfo[],
+    underbust_sizes?: number[],
+    clothing_sizes?: number[],
+    cup_sizes?: number[]
   ) {
     const subCategory = await prisma.subCategory.findFirst({
       where: {
@@ -64,6 +70,15 @@ class ProductService {
         name,
         price: Number(price),
         img: fileNames,
+        cup_sizes: {
+          connect: cup_sizes?.map((id) => ({ id })),
+        },
+        clothing_sizes: {
+          connect: clothing_sizes?.map((id) => ({ id })),
+        },
+        underbust_sizes: {
+          connect: underbust_sizes?.map((id) => ({ id })),
+        },
         category: {
           connect: {
             id: Number(categoryId),
@@ -78,9 +93,10 @@ class ProductService {
     });
 
     if (info) {
-      //@ts-ignore
-      info = JSON.parse(info); // only for postman ??
-      console.log(info);
+      if (typeof info === "string") {
+        //@ts-ignore
+        info = JSON.parse(info); // only for postman ??
+      }
       info.forEach(
         async (i) =>
           await prisma.productInfo.create({
@@ -99,7 +115,12 @@ class ProductService {
 
     if (variation) {
       //@ts-ignore
-      variation = JSON.parse(variation); // only for postman ??
+
+      if (typeof variation === "string") {
+        //@ts-ignore
+        variation = JSON.parse(variation); // only for postman ??
+      }
+
       variation.forEach(
         async (i) =>
           await prisma.productVariation.create({
@@ -132,7 +153,10 @@ class ProductService {
     subCategoryId: number,
     fileNames: string[],
     variation: ProductVariation[],
-    info: ProductInfo[]
+    info: ProductInfo[],
+    underbust_sizes?: number[],
+    clothing_sizes?: number[],
+    cup_sizes?: number[]
   ) {
     const subCategory = await prisma.subCategory.findFirst({
       where: {
@@ -147,12 +171,24 @@ class ProductService {
       );
     }
 
+    console.log(cup_sizes);
+
+
     const product = await prisma.product.update({
       where: { id: Number(id) },
       data: {
         name,
         price: Number(price),
         img: fileNames,
+        cup_sizes: {
+          connect: cup_sizes?.map((id) => ({ id })),
+        },
+        clothing_sizes: {
+          connect: clothing_sizes?.map((id) => ({ id })),
+        },
+        underbust_sizes: {
+          connect: underbust_sizes?.map((id) => ({ id })),
+        },
         category: {
           connect: {
             id: Number(categoryId),

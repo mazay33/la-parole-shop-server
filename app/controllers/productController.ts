@@ -40,7 +40,26 @@ class ProductController {
         subCategoryId,
         variation,
         info,
+        underbust_sizes,
+        clothing_sizes,
+        cup_sizes,
       }: ProductData = req.body;
+
+      //for postman
+      if (cup_sizes && typeof cup_sizes === "string") {
+        // @ts-ignore
+        cup_sizes = JSON.parse(cup_sizes);
+      }
+
+      if (clothing_sizes && typeof clothing_sizes === "string") {
+        // @ts-ignore
+        clothing_sizes = JSON.parse(clothing_sizes);
+      }
+
+      if (underbust_sizes && typeof underbust_sizes === "string") {
+        // @ts-ignore
+        underbust_sizes = JSON.parse(underbust_sizes);
+      }
 
       const images = req.files?.images;
 
@@ -65,7 +84,10 @@ class ProductController {
         subCategoryId,
         fileNames,
         variation,
-        info
+        info,
+        underbust_sizes,
+        clothing_sizes,
+        cup_sizes
       );
 
       return res.json(product);
@@ -84,7 +106,25 @@ class ProductController {
         subCategoryId,
         variation,
         info,
+        clothing_sizes,
+        underbust_sizes,
+        cup_sizes,
       }: ProductData = req.body;
+
+      if(clothing_sizes && typeof clothing_sizes === "string") {
+        // @ts-ignore
+        clothing_sizes = JSON.parse(clothing_sizes);
+      }
+
+      if(underbust_sizes && typeof underbust_sizes === "string") {
+        // @ts-ignore
+        underbust_sizes = JSON.parse(underbust_sizes);
+      }
+
+      if(cup_sizes && typeof cup_sizes === "string") {
+        // @ts-ignore
+        cup_sizes = JSON.parse(cup_sizes);
+      }
 
       const images = req.files?.images;
 
@@ -110,7 +150,10 @@ class ProductController {
         subCategoryId,
         fileNames,
         variation,
-        info
+        info,
+        clothing_sizes,
+        underbust_sizes,
+        cup_sizes
       );
 
       return res.json(product);
