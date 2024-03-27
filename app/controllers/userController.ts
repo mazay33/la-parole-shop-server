@@ -111,6 +111,19 @@ class userController {
       next(error);
     }
   }
+
+  async getMe(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      throw ApiError.UnauthorizedError();
+    }
+    const { id } = req.user;
+    try {
+      const user = await userService.getMe(id);
+      return res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new userController();

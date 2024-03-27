@@ -123,6 +123,19 @@ class UserService {
     });
     return users;
   }
+
+  async getMe(id: number) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        cart: true,
+        profile: true,
+        address: true,
+        wishlist: true,
+      },
+    });
+    return user;
+  }
 }
 
 export default new UserService();
