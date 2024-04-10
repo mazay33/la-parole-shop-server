@@ -133,8 +133,7 @@ model Product {
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
 
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
-  subCategoryId Int
+  sub_categories SubCategory[]
 
   info       ProductInfo[]
   variations ProductVariation[]
@@ -168,7 +167,7 @@ model ClothingSize {
 model ProductVariation {
   id        Int     @id @unique @default(autoincrement())
   product   Product @relation(fields: [productId], references: [id])
-  productId Int     @unique
+  productId Int
   sku       String
   price     Float
   name      String
