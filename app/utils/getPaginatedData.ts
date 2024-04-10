@@ -1,4 +1,4 @@
-export default async function getPaginatedData(
+export default async function getPaginatedData<T>(
   model: any,
   {
     sort,
@@ -11,7 +11,10 @@ export default async function getPaginatedData(
     offset?: number;
     include: any;
   }
-) {
+): Promise<{
+  data: T[];
+  totalCount: number;
+}> {
   const column = sort?.replace(/^-/, "") || "id";
   const order = sort?.startsWith("-") ? "desc" : "asc";
 
