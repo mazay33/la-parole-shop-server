@@ -8,7 +8,7 @@ const router = Router();
 
 router.get("/", productController.getProducts);
 router.get("/:id", productController.getProduct);
-router.put("/:id", checkRole("ADMIN"), productController.updateProduct);
+// router.put("/:id", checkRole("ADMIN"), productController.updateProduct);
 router.post("/", checkRole("ADMIN"), productController.createProduct);
 router.delete("/:id", checkRole("ADMIN"), productController.deleteProduct);
 

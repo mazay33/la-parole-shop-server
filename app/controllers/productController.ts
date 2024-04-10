@@ -37,7 +37,7 @@ class ProductController {
         name,
         price,
         categoryId,
-        subCategoryId,
+        sub_categories,
         variation,
         info,
         underbust_sizes,
@@ -45,18 +45,22 @@ class ProductController {
         cup_sizes,
       }: ProductData = req.body;
 
-      //for postman
-      if (cup_sizes && typeof cup_sizes === "string") {
+      if(sub_categories){
+        // @ts-ignore
+        sub_categories = JSON.parse(sub_categories);
+      }
+
+      if (cup_sizes) {
         // @ts-ignore
         cup_sizes = JSON.parse(cup_sizes);
       }
 
-      if (clothing_sizes && typeof clothing_sizes === "string") {
+      if (clothing_sizes) {
         // @ts-ignore
         clothing_sizes = JSON.parse(clothing_sizes);
       }
 
-      if (underbust_sizes && typeof underbust_sizes === "string") {
+      if (underbust_sizes) {
         // @ts-ignore
         underbust_sizes = JSON.parse(underbust_sizes);
       }
@@ -81,7 +85,7 @@ class ProductController {
         name,
         price,
         categoryId,
-        subCategoryId,
+        sub_categories,
         fileNames,
         variation,
         info,
@@ -96,71 +100,71 @@ class ProductController {
     }
   }
 
-  async updateProduct(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      let {
-        name,
-        price,
-        categoryId,
-        subCategoryId,
-        variation,
-        info,
-        clothing_sizes,
-        underbust_sizes,
-        cup_sizes,
-      }: ProductData = req.body;
+  // async updateProduct(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const { id } = req.params;
+  //     let {
+  //       name,
+  //       price,
+  //       categoryId,
+  //       subCategoryId,
+  //       variation,
+  //       info,
+  //       clothing_sizes,
+  //       underbust_sizes,
+  //       cup_sizes,
+  //     }: ProductData = req.body;
 
-      if(clothing_sizes && typeof clothing_sizes === "string") {
-        // @ts-ignore
-        clothing_sizes = JSON.parse(clothing_sizes);
-      }
+  //     if(clothing_sizes && typeof clothing_sizes === "string") {
+  //       // @ts-ignore
+  //       clothing_sizes = JSON.parse(clothing_sizes);
+  //     }
 
-      if(underbust_sizes && typeof underbust_sizes === "string") {
-        // @ts-ignore
-        underbust_sizes = JSON.parse(underbust_sizes);
-      }
+  //     if(underbust_sizes && typeof underbust_sizes === "string") {
+  //       // @ts-ignore
+  //       underbust_sizes = JSON.parse(underbust_sizes);
+  //     }
 
-      if(cup_sizes && typeof cup_sizes === "string") {
-        // @ts-ignore
-        cup_sizes = JSON.parse(cup_sizes);
-      }
+  //     if(cup_sizes && typeof cup_sizes === "string") {
+  //       // @ts-ignore
+  //       cup_sizes = JSON.parse(cup_sizes);
+  //     }
 
-      const images = req.files?.images;
+  //     const images = req.files?.images;
 
-      let fileNames = [];
+  //     let fileNames = [];
 
-      if (Array.isArray(images)) {
-        let fileName = uuidv4() + ".jpg";
-        images.forEach((img) => {
-          img.mv(path.resolve(__dirname, "../..", "static", fileName));
-          fileNames.push(fileName);
-        });
-      } else {
-        let fileName = uuidv4() + ".jpg";
-        images?.mv(path.resolve(__dirname, "../..", "static", fileName));
-        fileNames.push(fileName);
-      }
+  //     if (Array.isArray(images)) {
+  //       let fileName = uuidv4() + ".jpg";
+  //       images.forEach((img) => {
+  //         img.mv(path.resolve(__dirname, "../..", "static", fileName));
+  //         fileNames.push(fileName);
+  //       });
+  //     } else {
+  //       let fileName = uuidv4() + ".jpg";
+  //       images?.mv(path.resolve(__dirname, "../..", "static", fileName));
+  //       fileNames.push(fileName);
+  //     }
 
-      const product = await ProductService.updateProduct(
-        +id,
-        name,
-        price,
-        categoryId,
-        subCategoryId,
-        fileNames,
-        variation,
-        info,
-        clothing_sizes,
-        underbust_sizes,
-        cup_sizes
-      );
+  //     const product = await ProductService.updateProduct(
+  //       +id,
+  //       name,
+  //       price,
+  //       categoryId,
+  //       subCategoryId,
+  //       fileNames,
+  //       variation,
+  //       info,
+  //       clothing_sizes,
+  //       underbust_sizes,
+  //       cup_sizes
+  //     );
 
-      return res.json(product);
-    } catch (error) {
-      next(error);
-    }
-  }
+  //     return res.json(product);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
   async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {

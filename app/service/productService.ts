@@ -1,4 +1,10 @@
-import { Product, ProductInfo, ProductVariation } from "@prisma/client";
+import {
+  Category,
+  Prisma,
+  Product,
+  ProductInfo,
+  ProductVariation,
+} from "@prisma/client";
 import { ProductData } from "../@types/Product";
 import prisma from "../db";
 import ApiError from "../exceptions/apiError";
@@ -6,13 +12,13 @@ import getPaginatedData from "../utils/getPaginatedData";
 
 class ProductService {
   async getProducts(sort?: string, limit?: number, offset?: number) {
-    const products = await getPaginatedData(prisma.product, {
+    const products = await getPaginatedData<Product>(prisma.product, {
       sort,
       limit,
       offset,
       include: {
         category: { select: { name: true } },
-        subCategory: { select: { name: true } },
+        sub_categories: { select: { name: true } },
       },
     });
     return products;
@@ -27,9 +33,7 @@ class ProductService {
         category: {
           select: { name: true },
         },
-        subCategory: {
-          select: { name: true },
-        },
+        sub_categories: true,
         cup_sizes: true,
         clothing_sizes: true,
         underbust_sizes: true,
@@ -44,7 +48,7 @@ class ProductService {
     name: string,
     price: number,
     categoryId: number,
-    subCategoryId: number,
+    sub_categories: any,
     fileNames: string[],
     variation: ProductVariation[],
     info: ProductInfo[],
@@ -52,42 +56,27 @@ class ProductService {
     clothing_sizes?: number[],
     cup_sizes?: number[]
   ) {
-    const subCategory = await prisma.subCategory.findFirst({
-      where: {
-        id: Number(subCategoryId),
-        categoryId: Number(categoryId),
-      },
-    });
-
-    if (!subCategory) {
-      throw ApiError.BadRequest(
-        "Созданная подкатегория не принадлежит существующей категории"
-      );
-    }
-
     const product = await prisma.product.create({
       data: {
         name,
         price: Number(price),
         img: fileNames,
         cup_sizes: {
-          connect: cup_sizes?.map((id) => ({ id })),
+          connect: cup_sizes?.map((id: number) => ({ id: +id })),
         },
         clothing_sizes: {
-          connect: clothing_sizes?.map((id) => ({ id })),
+          connect: clothing_sizes?.map((id: number) => ({ id: +id })),
         },
         underbust_sizes: {
-          connect: underbust_sizes?.map((id) => ({ id })),
+          connect: underbust_sizes?.map((id: number) => ({ id: +id })),
         },
         category: {
           connect: {
             id: Number(categoryId),
           },
         },
-        subCategory: {
-          connect: {
-            id: Number(subCategoryId),
-          },
+        sub_categories: {
+          connect: sub_categories?.map((id: number) => ({ id: +id })),
         },
       },
     });
@@ -114,12 +103,7 @@ class ProductService {
     }
 
     if (variation) {
-      //@ts-ignore
-
-      if (typeof variation === "string") {
-        //@ts-ignore
-        variation = JSON.parse(variation); // only for postman ??
-      }
+      variation = JSON.parse(variation as any);
 
       variation.forEach(
         async (i) =>
@@ -128,6 +112,7 @@ class ProductService {
               sku: i.sku,
               price: +i.price,
               name: i.name,
+
               product: {
                 connect: {
                   id: product.id,
@@ -145,99 +130,98 @@ class ProductService {
     };
   }
 
-  async updateProduct(
-    id: number,
-    name: string,
-    price: number,
-    categoryId: number,
-    subCategoryId: number,
-    fileNames: string[],
-    variation: ProductVariation[],
-    info: ProductInfo[],
-    underbust_sizes?: number[],
-    clothing_sizes?: number[],
-    cup_sizes?: number[]
-  ) {
-    const subCategory = await prisma.subCategory.findFirst({
-      where: {
-        id: Number(subCategoryId),
-        categoryId: Number(categoryId),
-      },
-    });
+  // async updateProduct(
+  //   id: number,
+  //   name: string,
+  //   price: number,
+  //   categoryId: number,
+  //   subCategoryId: number,
+  //   fileNames: string[],
+  //   variation: ProductVariation[],
+  //   info: ProductInfo[],
+  //   underbust_sizes?: number[],
+  //   clothing_sizes?: number[],
+  //   cup_sizes?: number[]
+  // ) {
+  //   const subCategory = await prisma.subCategory.findFirst({
+  //     where: {
+  //       id: Number(subCategoryId),
+  //       categoryId: Number(categoryId),
+  //     },
+  //   });
 
-    if (!subCategory) {
-      throw ApiError.BadRequest(
-        "Созданная подкатегория не принадлежит существующей категории"
-      );
-    }
+  //   if (!subCategory) {
+  //     throw ApiError.BadRequest(
+  //       "Созданная подкатегория не принадлежит существующей категории"
+  //     );
+  //   }
 
-    console.log(cup_sizes);
+  //   console.log(cup_sizes);
 
+  //   const product = await prisma.product.update({
+  //     where: { id: Number(id) },
+  //     data: {
+  //       name,
+  //       price: Number(price),
+  //       img: fileNames,
+  //       cup_sizes: {
+  //         connect: cup_sizes?.map((id) => ({ id })),
+  //       },
+  //       clothing_sizes: {
+  //         connect: clothing_sizes?.map((id) => ({ id })),
+  //       },
+  //       underbust_sizes: {
+  //         connect: underbust_sizes?.map((id) => ({ id })),
+  //       },
+  //       category: {
+  //         connect: {
+  //           id: Number(categoryId),
+  //         },
+  //       },
+  //       subCategory: {
+  //         connect: {
+  //           id: Number(subCategoryId),
+  //         },
+  //       },
+  //     },
+  //   });
 
-    const product = await prisma.product.update({
-      where: { id: Number(id) },
-      data: {
-        name,
-        price: Number(price),
-        img: fileNames,
-        cup_sizes: {
-          connect: cup_sizes?.map((id) => ({ id })),
-        },
-        clothing_sizes: {
-          connect: clothing_sizes?.map((id) => ({ id })),
-        },
-        underbust_sizes: {
-          connect: underbust_sizes?.map((id) => ({ id })),
-        },
-        category: {
-          connect: {
-            id: Number(categoryId),
-          },
-        },
-        subCategory: {
-          connect: {
-            id: Number(subCategoryId),
-          },
-        },
-      },
-    });
+  //   if (info) {
+  //     //@ts-ignore
+  //     info = JSON.parse(info); // only for postman ??
+  //     info.forEach(
+  //       async (i) =>
+  //         await prisma.productInfo.update({
+  //           where: {
+  //             productId: product.id,
+  //           },
+  //           data: {
+  //             title: i.title,
+  //             description: i.description,
+  //           },
+  //         })
+  //     );
+  //   }
 
-    if (info) {
-      //@ts-ignore
-      info = JSON.parse(info); // only for postman ??
-      info.forEach(
-        async (i) =>
-          await prisma.productInfo.update({
-            where: {
-              productId: product.id,
-            },
-            data: {
-              title: i.title,
-              description: i.description,
-            },
-          })
-      );
-    }
-
-    if (variation) {
-      //@ts-ignore
-      variation = JSON.parse(variation); // only for postman ??
-      variation.forEach(
-        async (i) =>
-          await prisma.productVariation.update({
-            where: {
-              productId: product.id,
-            },
-            data: {
-              sku: i.sku,
-              price: +i.price,
-              name: i.name,
-            },
-          })
-      );
-    }
-    return { ...product, variation, info };
-  }
+  //   if (variation) {
+  //     //@ts-ignore
+  //     variation = JSON.parse(variation); // only for postman ??
+  //     variation.forEach(
+  //       async (i) =>
+  //         await prisma.productVariation.update({
+  //           where: {
+  //             productId: product.id,
+  //           },
+  //           data: {
+  //             sku: i.sku,
+  //             price: +i.price,
+  //             name: i.name,
+  //           },
+  //         })
+  //     );
+  //   }
+  //   return { ...product, variation, info };
+  // }
 
   async deleteProduct(id: number) {
     const product = await prisma.product.delete({
