@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 class CartService {
   async getCartItems(userId: number) {
-    const cartItems = await prisma.cart.findMany({
+    const cartItems = await prisma.cart.findFirst({
       where: { userId },
       include: {
         cart_items: {
@@ -23,6 +23,16 @@ class CartService {
       },
     });
     return cartItems;
+  }
+
+  async getCartItemsCount(userId: number) {
+    const cartItemsCount = await prisma.cart.findFirst({
+      where: { userId },
+      include: {
+        _count: true,
+      }
+    });
+    return cartItemsCount;
   }
 }
 
