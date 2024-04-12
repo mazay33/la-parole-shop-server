@@ -45,7 +45,7 @@ class ProductController {
         cup_sizes,
       }: ProductData = req.body;
 
-      if(sub_categories){
+      if (sub_categories) {
         // @ts-ignore
         sub_categories = JSON.parse(sub_categories);
       }
@@ -211,19 +211,6 @@ class ProductController {
     }
   }
 
-  async deleteAllFromCart(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!req.user) {
-        throw ApiError.UnauthorizedError();
-      }
-      const { id: userId } = req.user;
-      await ProductService.deleteAllFromCart(userId);
-      return res.json({ deleted: true });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async addToWishlist(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
@@ -242,6 +229,7 @@ class ProductController {
     }
   }
 
+  //TODO: add to wishlist controller
   async deleteFromWishlist(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {

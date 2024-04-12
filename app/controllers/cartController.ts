@@ -9,7 +9,7 @@ class CartController {
 
     try {
       const cartItems = await CartService.getCartItems(id);
-      res.json(cartItems);
+      res.json(cartItems?.cart_items || []);
     } catch (error) {
       next(error);
     }
@@ -21,7 +21,20 @@ class CartController {
 
     try {
       const cartItemsCount = await CartService.getCartItemsCount(id);
-      res.json({count: cartItemsCount?._count.cart_items || 0});
+      res.json({ count: cartItemsCount?._count.cart_items || 0 });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteAllFromCart(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw ApiError.UnauthorizedError();
+      }
+      const { id: userId } = req.user;
+      await CartService.deleteAllFromCart(userId);
+      return res.json({ deleted: true });
     } catch (error) {
       next(error);
     }

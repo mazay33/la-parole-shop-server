@@ -10,14 +10,7 @@ class CartService {
         cart_items: {
           select: {
             count: true,
-            product: {
-              select: {
-                id: true,
-                name: true,
-                price: true,
-                img: true,
-              },
-            },
+            product: true,
           },
         },
       },
@@ -30,9 +23,18 @@ class CartService {
       where: { userId },
       include: {
         _count: true,
-      }
+      },
     });
     return cartItemsCount;
+  }
+
+  async deleteAllFromCart(userId: number) {
+    const cartProduct = await prisma.cartProduct.deleteMany({
+      where: {
+        cartId: Number(userId),
+      },
+    });
+    return cartProduct;
   }
 }
 
